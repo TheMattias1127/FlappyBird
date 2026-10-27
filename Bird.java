@@ -16,18 +16,24 @@ public class Bird {
     private int jumpDelay;
 
     private Image image;
-    private Keyboard keyboard;
+    private JumpInput input;
 
-    public Bird () {
-        x = 100;
-        y = 200;
-        yvel = 0;
-        width = 40;
-        height = 40;
-        gravity = 0.6;
-        jumpDelay = 0;
-        collision = false;
-        keyboard = Keyboard.getInstance();
+    public Bird() {
+        this(Keyboard.getInstance(), new CachedFileImageLoader());
+    }
+
+    public Bird(JumpInput input, ImageLoader imageLoader) {
+        this.x = 100;
+        this.y = 200;
+        this.yvel = 0;
+        this.width = 40;
+        this.height = 40;
+        this.gravity = 0.6;
+        this.jumpDelay = 0;
+        this.collision = false;
+
+        this.input = input;
+        this.image = imageLoader.loadImage("lib/bird.png");
     }
     private void checkCollision(){
         //System.out.println(y);
@@ -39,28 +45,22 @@ public class Bird {
     public void update () {
         yvel += gravity;
 
-        if (jumpDelay > 0)
+        if (jumpDelay > 0){
             jumpDelay--;
+        }
 
-        if (keyboard.isDown(KeyEvent.VK_SPACE) && jumpDelay <= 0) {
+        if (input.isJumpPressed() && jumpDelay <= 0) {
             yvel = -10;
             jumpDelay = 10;
         }
 
         checkCollision();
-        if(!collision){
-            y += (int)yvel;
+        if (!collision) {
+            y += (int) yvel;
         }
-
-            
     }
 
     public Image getImage () {
-
-        if (image == null) {
-            image = Util.loadImage("lib/bird.png");     
-        }
-        
         return image;
     }
 }
